@@ -136,7 +136,13 @@
 				"if test $carrier_rev = legacy; then " \
 					"setenv fdt_file imx8mp-var-dart-dt8mcustomboard-legacy.dtb;" \
 				"else " \
-					"setenv fdt_file imx8mp-var-dart-dt8mcustomboard.dtb;" \
+					"if test ${som_rev} -lt 2; then " \
+						"setenv fdt_file imx8mp-var-dart-1.x-dt8mcustomboard.dtb; " \
+					"elif test ${som_has_wbe} = 1; then " \
+						"setenv fdt_file imx8mp-var-dart-wbe-dt8mcustomboard.dtb; " \
+					"else " \
+						"setenv fdt_file imx8mp-var-dart-dt8mcustomboard.dtb;" \
+					"fi; " \
 				"fi; " \
 			"fi; " \
 		"fi; \0" \
