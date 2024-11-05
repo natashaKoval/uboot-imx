@@ -25,6 +25,7 @@
 #include <power/regulator.h>
 #include <linux/delay.h>
 #include <mmc.h>
+#include <dm/root.h>
 
 #include "../common/extcon-ptn5150.h"
 #include "../common/imx8_eeprom.h"
@@ -405,8 +406,46 @@ int board_ehci_usb_phy_mode(struct udevice *dev)
 #endif
 #endif
 
+static void board_fdt_fixup(void)
+{
+	struct var_eeprom *ep = VAR_EEPROM_DATA;
+	int som_rev = SOMREV_MAJOR(ep->somrev);
+
+	if ((var_detect_board_id() == BOARD_ID_DART) && (som_rev >= 2)) {
+		int node_offset, subnode_offset, ret;
+		void *fdt_blob = (void *)gd->fdt_blob;
+		const char *node_path = "/soc@0/bus@30000000/gpio@30210000";
+
+		node_offset = fdt_path_offset(fdt_blob, node_path);
+		if (node_offset < 0) {
+			printf("WARNING: couldn't find %s: %s\n", node_path,
+			fdt_strerror(node_offset));
+			return;
+		}
+
+		subnode_offset = fdt_subnode_offset(fdt_blob, node_offset, "eth0_phy_pwr_hog");
+		if (subnode_offset < 0) {
+			printf("WARNING: couldn't find eth0_phy_pwr_hog node: %s\n",
+			fdt_strerror(subnode_offset));
+			return;
+		}
+
+		ret = fdt_del_node(fdt_blob, subnode_offset);
+		if (ret < 0) {
+			printf("WARNING: couldn't delete eth0_phy_pwr_hog node: %s\n",
+			fdt_strerror(ret));
+			return;
+		}
+
+		dm_uninit();
+		dm_init_and_scan(false);
+	}
+}
+
 int board_init(void)
 {
+	board_fdt_fixup();
+
 	if (CONFIG_IS_ENABLED(EXTCON_PTN5150)) {
 		extcon_ptn5150_setup(&usb_ptn5150);
 	}
