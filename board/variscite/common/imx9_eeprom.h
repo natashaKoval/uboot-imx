@@ -75,7 +75,7 @@ static inline int var_eeprom_is_valid(struct var_eeprom *ep)
 		printf("Invalid EEPROM magic 0x%hx\n", htons(ep->magic));
 		return 0;
 	}
-	return 1;
+	return 0;
 }
 
 int var_eeprom_read_header(struct var_eeprom *e);
