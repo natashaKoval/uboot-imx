@@ -1532,6 +1532,7 @@ err_shutdown_phy:
 static int eqos_probe(struct udevice *dev)
 {
 	struct eqos_priv *eqos = dev_get_priv(dev);
+	bool dm_mii_bus = true;
 	int ret;
 
 	debug("%s(dev=%p):\n", __func__, dev);
@@ -1573,6 +1574,7 @@ static int eqos_probe(struct udevice *dev)
 	eqos->mii = eth_phy_get_mdio_bus(dev);
 #endif
 	if (!eqos->mii) {
+		dm_mii_bus = false;
 		eqos->mii = mdio_alloc();
 		if (!eqos->mii) {
 			pr_err("mdio_alloc() failed");
@@ -1597,10 +1599,14 @@ static int eqos_probe(struct udevice *dev)
 
 	ret = eqos_phy_init(eqos, dev);
 	if (ret < 0)
-		goto err_free_mdio;
+		goto err_unregister_mdio;
 
 	debug("%s: OK\n", __func__);
 	return 0;
+
+err_unregister_mdio:
+	if (!dm_mii_bus)
+		mdio_unregister(eqos->mii);
 
 err_free_mdio:
 	mdio_free(eqos->mii);
