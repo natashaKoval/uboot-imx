@@ -182,6 +182,43 @@ static int eth_phy_pre_probe(struct udevice *dev)
 	return 0;
 }
 
+int eth_phy_is_mdio_shared(struct udevice *eth_dev, bool *shared)
+{
+	ofnode mdio_node, phy_node;
+	const char *node_name;
+	struct udevice *phy_dev;
+	int phy_node_ctr = 0;
+	int ret;
+
+	/* Search for a subnode named "mdio.*" */
+	dev_for_each_subnode(mdio_node, eth_dev) {
+		node_name = ofnode_get_name(mdio_node);
+		if (!strncmp(node_name, "mdio", 4))
+			break;
+	}
+
+	if (!ofnode_valid(mdio_node)) {
+		dev_dbg(eth_dev, "%s: mdio subnode not found!\n", __func__);
+		return -ENXIO;
+	}
+
+	dev_dbg(eth_dev, "%s: %s subnode found!\n", __func__,  node_name);
+
+	ofnode_for_each_subnode(phy_node, mdio_node) {
+		node_name = ofnode_get_name(phy_node);
+		dev_dbg(eth_dev, "* Found PHY node: '%s'\n", node_name);
+		phy_node_ctr++;
+	}
+
+	ret = uclass_find_device_by_phandle(UCLASS_ETH_PHY, eth_dev,
+						"phy-handle", &phy_dev);
+
+	*shared = (phy_node_ctr > 1) ||
+		       ((phy_node_ctr > 0) && (ret == -ENOENT));
+
+	return 0;
+}
+
 UCLASS_DRIVER(eth_phy_generic) = {
 	.id		= UCLASS_ETH_PHY,
 	.name		= "eth_phy_generic",

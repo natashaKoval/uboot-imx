@@ -14,5 +14,6 @@ int eth_phy_binds_nodes(struct udevice *eth_dev);
 int eth_phy_set_mdio_bus(struct udevice *eth_dev, struct mii_dev *mdio_bus);
 struct mii_dev *eth_phy_get_mdio_bus(struct udevice *eth_dev);
 int eth_phy_get_addr(struct udevice *dev);
+int eth_phy_is_mdio_shared(struct udevice *eth_dev, bool *shared);
 
 #endif
