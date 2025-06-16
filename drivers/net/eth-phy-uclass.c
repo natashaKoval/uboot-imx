@@ -4,7 +4,7 @@
  */
 
 #define LOG_CATEGORY UCLASS_ETH_PHY
-
+#define DEBUG
 #include <common.h>
 #include <dm.h>
 #include <log.h>
