@@ -1591,6 +1591,10 @@ static int eqos_probe(struct udevice *dev)
 			pr_err("mdio_register() failed: %d", ret);
 			goto err_free_mdio;
 		}
+
+#ifdef CONFIG_DM_ETH_PHY
+		ret = eth_phy_is_mdio_shared(dev, &dm_mii_bus);
+#endif
 	}
 
 #ifdef CONFIG_DM_ETH_PHY
@@ -1607,6 +1611,8 @@ static int eqos_probe(struct udevice *dev)
 err_unregister_mdio:
 	if (!dm_mii_bus)
 		mdio_unregister(eqos->mii);
+	else
+		return 0;
 
 err_free_mdio:
 	mdio_free(eqos->mii);
