@@ -1602,6 +1602,7 @@ static int eqos_probe(struct udevice *dev)
 #endif
 
 	ret = eqos_phy_init(eqos, dev);
+	ret = -ENODEV;
 	if (ret < 0)
 		goto err_unregister_mdio;
 
