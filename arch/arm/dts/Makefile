@@ -858,7 +858,6 @@ dtb-$(CONFIG_MX6ULL) += \
 	imx6ull-myir-mys-6ulx-eval.dtb \
 	imx6ull-seeed-npi-imx6ull-dev-board.dtb \
 	imx6ull-phytec-segin-ff-rdk-emmc.dtb \
-	imx6ull-dart-6ul.dtb \
 	imx6ull-somlabs-visionsom.dtb \
 	imx6ulz-14x14-evk.dtb \
 	imx6ulz-14x14-evk-emmc.dtb \
@@ -944,7 +943,6 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mq-cm.dtb \
 	imx8mn-ddr4-ab2.dtb \
 	imx8mn-ab2.dtb \
-	imx8mn-var-som-symphony.dtb \
 	imx8mq-mnt-reform2.dtb \
 	imx8mq-phanbell.dtb \
 	imx8mp-data-modul-edm-sbc.dtb \
@@ -972,7 +970,6 @@ dtb-$(CONFIG_ARCH_IMX9) += \
 	imx91-9x9-qsb.dtb \
 	imx91-11x11-frdm.dtb \
 	imx91-11x11-frdm-imx91s.dtb \
-	imx93-var-som-symphony.dtb \
 	imx93-phyboard-segin.dtb \
 	imx93-11x11-frdm.dtb
 
