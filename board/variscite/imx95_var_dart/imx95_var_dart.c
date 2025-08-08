@@ -220,6 +220,7 @@ void netc_init(void)
 
 	netc_phy_rst("GPIO5_16", "ENET1_RST_B");
 	netc_phy_rst("i2c8_io@21_0", "ENET2_RST_B");
+	netc_phy_rst("i2c3_io@22_5", "ETH10G_SEL");
 
 	pci_init();
 }

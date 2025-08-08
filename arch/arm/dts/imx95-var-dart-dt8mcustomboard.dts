@@ -147,6 +147,13 @@
 		i2c-bus = <0x2>;
 		status = "okay";
 	};
+
+	pca9534: gpio@22 {
+		compatible = "nxp,pca9534";
+		reg = <0x22>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
 };
 
 &lpi2c8 {
