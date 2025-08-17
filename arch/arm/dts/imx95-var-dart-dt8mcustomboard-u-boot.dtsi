@@ -52,6 +52,10 @@
 	label = "i2c8_io";
 };
 
+&pca9534 {
+	label = "i2c3_io";
+};
+
 &pinctrl_reg_usdhc2_vmmc {
 	bootph-pre-ram;
 };
