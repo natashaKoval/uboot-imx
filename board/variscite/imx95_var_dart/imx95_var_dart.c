@@ -37,6 +37,7 @@ static int board_sm_cfg_info(void);
 #define CARRIER_EEPROM_ADDR		0x54
 
 static struct var_eeprom eeprom = {0};
+static bool m7_is_powered = false;
 
 int board_early_init_f(void)
 {
@@ -248,19 +249,14 @@ int board_init(void)
 
 	netc_init();
 
-	/*
-	 * NXP uses mx95alt.cfg config in System Manager for MCUXpresso testing and
-	 * mx95evk.cfg config for Linux system testing.
-	 *
-	 * Building SM with mx95alt.cfg configuration is needed to run the Cortex M7 demos from U-Boot
-	 * and from linux user space using remoteproc.
-	 * Currently,  building SM with mx95alt.cfg generates an issue with USB support from kernel side
-	 * for this reason the SM configuration file used is mx95evk.cfg.
-	 *
-	 * Behind all this, the power_on_m7() is disabled.
-	 */
-
-	/* power_on_m7("mx95alt"); */
+	m7_is_powered = false;
+	if (power_on_m7("dart-mx95-m7") == 0) {
+		m7_is_powered = true;
+	} else if (power_on_m7("dart-mx95-m7deb") == 0) {
+		m7_is_powered = true;
+	} else {
+		printf("Cortex M7 core not powered ON\n");
+	}
 
 #ifdef CONFIG_EXTCON_PTN5150
 	extcon_ptn5150_setup(&usb_ptn5150);
@@ -302,6 +298,12 @@ int board_late_init(void)
 
 	if (var_carrier_eeprom_get_name(&carrier_eeprom, carrier_name) > 0)
 		env_set("carrier_name", carrier_name);
+
+	/* To avoid U-Boot crash running Cortex M7 demos */
+	if (m7_is_powered == false) {
+		printf ("Force use_m7=no because Cortex-M7 is not powered");
+		env_set("use_m7", "no");
+	}
 
 	var_setup_mac(ep);
 
