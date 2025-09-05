@@ -90,5 +90,6 @@ void var_eeprom_adjust_dram(struct var_eeprom *e, struct dram_timing_info *d);
 int var_carrier_eeprom_read(const char *bus_name, int addr, struct var_carrier_eeprom *ep);
 int var_carrier_eeprom_is_valid(struct var_carrier_eeprom *ep);
 void var_carrier_eeprom_get_revision(struct var_carrier_eeprom *ep, char *rev, size_t size);
+int var_carrier_eeprom_get_name(struct var_carrier_eeprom *ep, char *name);
 
 #endif /* _MX9_VAR_EEPROM_H_ */
