@@ -303,7 +303,10 @@ int board_late_init(void)
 	if (m7_is_powered == false) {
 		printf ("Force use_m7=no because Cortex-M7 is not powered");
 		env_set("use_m7", "no");
+		env_set("m7_dtb_suffix", "");
 	}
+	else
+		env_set("m7_dtb_suffix", "-m7");
 
 	var_setup_mac(ep);
 

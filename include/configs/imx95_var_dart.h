@@ -85,7 +85,7 @@
 		"unzip ${img_addr} ${loadaddr}\0" \
 	"findfdt=" \
 		"if test $fdt_file = undefined; then " \
-			"setenv fdt_file imx95-var-dart-${carrier_name}.dtb;" \
+			"setenv fdt_file imx95-var-dart-${carrier_name}${m7_dtb_suffix}.dtb;" \
 		"fi; \0" \
 	"loadfdt=run findfdt; " \
 		"echo fdt_file=${fdt_file}; " \
