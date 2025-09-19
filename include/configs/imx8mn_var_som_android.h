@@ -17,7 +17,12 @@
 #endif
 
 #define HW_ENV_SETTINGS \
-	"cmaargs=" \
+	"kernelbootargs=" \
+		"if test ${som_rev} -ge 2; then " \
+			"setenv wifi_args 'moal.mod_para=wifi_mod_para_iw612.conf'; " \
+		"else " \
+			"setenv wifi_args ''; " \
+		"fi; " \
 		"if test $sdram_size = 1024; then " \
 			"setenv cmavar 320M@0x400M-0xb80M; " \
 			"setenv galcore_var 'galcore.contiguousSize=33554432'; " \
@@ -25,11 +30,11 @@
 			"setenv cmavar 800M@0x400M-0xb80M; " \
 		"fi; " \
 		"setenv bootargs ${bootargs} " \
-			"cma=${cmavar} ${galcore_var}; \0"
+			"cma=${cmavar} ${galcore_var} ${wifi_args}; \0"
 
 #define BOOT_ENV_SETTINGS \
 	"bootcmd=" \
-		"run cmaargs; " \
+		"run kernelbootargs; " \
 		"boota ${fastboot_dev}\0"
 
 #define CFG_EXTRA_ENV_SETTINGS					\
