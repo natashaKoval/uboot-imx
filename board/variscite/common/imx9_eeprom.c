@@ -473,29 +473,36 @@ int var_carrier_eeprom_is_valid(struct var_carrier_eeprom *ep)
 }
 
 /* Returns carrier board revision string via 'rev' argument.
- * For legacy carrier board revisions the "legacy" string is returned.
- * For new carrier board revisions the actual carrier revision is returned.
- * Symphony-Board 1.4 and below are legacy, 1.4a and above are new.
- * DT8MCustomBoard 1.4 and below are legacy, 2.0 and above are new.
+ * If the value from EEPROM can't be read, return a default
+ * string representing the the current carrier board name.
+ * If the module is a DART, then return Sonata as default.
  */
-void var_carrier_eeprom_get_revision(struct var_carrier_eeprom *ep, char *rev, size_t size)
+void var_carrier_eeprom_get_revision(struct var_carrier_eeprom *ep,
+				     char *rev, size_t size, int som_type)
 {
-	if (var_carrier_eeprom_is_valid(ep))
+	if (var_carrier_eeprom_is_valid(ep)) {
 		strncpy(rev, (const char *)ep->carrier_rev, size);
-	else
-		strncpy(rev, "legacy", size);
+	} else { /* Default values if EEPROM can't be read */
+		if (som_type == VAR_DART)
+			strncpy(rev, "sonata", size);
+		else
+			strncpy(rev, "symphony", size);
+	}
 }
 
 /* Returns carrier board name string via 'carrier_rev' argument.
  * It removes rev number from carrier_rev string, copies it to
  * carrier_name and selects its full name
  */
-int var_carrier_eeprom_get_name(struct var_carrier_eeprom *ep, char *name)
+int var_carrier_eeprom_get_name(struct var_carrier_eeprom *ep,
+				char *name, int som_type)
 {
 	char carrier_rev[CARRIER_REV_LEN] = {0};
 	int len = 0;
 
-	var_carrier_eeprom_get_revision(ep, carrier_rev, sizeof(carrier_rev));
+	var_carrier_eeprom_get_revision(ep, carrier_rev,
+					sizeof(carrier_rev),
+					som_type);
 
 	if (carrier_rev[0] == '\0') {
 		return -1;
