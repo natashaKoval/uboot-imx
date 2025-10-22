@@ -293,10 +293,10 @@ int board_late_init(void)
 
 	/* Carrier Rev ENV */
 	var_carrier_eeprom_read(CARRIER_EEPROM_I2C_NAME, CARRIER_EEPROM_ADDR, &carrier_eeprom);
-	var_carrier_eeprom_get_revision(&carrier_eeprom, carrier_rev, sizeof(carrier_rev));
+	var_carrier_eeprom_get_revision(&carrier_eeprom, carrier_rev, sizeof(carrier_rev), VAR_DART);
 	env_set("carrier_rev", carrier_rev);
 
-	if (var_carrier_eeprom_get_name(&carrier_eeprom, carrier_name) > 0)
+	if (var_carrier_eeprom_get_name(&carrier_eeprom, carrier_name, VAR_DART) > 0)
 		env_set("carrier_name", carrier_name);
 
 	/* To avoid U-Boot crash running Cortex M7 demos */
