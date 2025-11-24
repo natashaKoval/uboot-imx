@@ -9,7 +9,7 @@
 #include "imx95-var-dart.dtsi"
 
 / {
-	model = "Variscite DART-MX95 on DT8MCustomBoard 3.x";
+	model = "Variscite DART-MX95";
 
 	chosen {
 		bootargs = "console=ttyLP0,115200 earlycon";
