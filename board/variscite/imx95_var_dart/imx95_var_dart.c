@@ -220,7 +220,9 @@ void netc_init(void)
 	set_clk_netc(ENET_125MHZ);
 
 	netc_phy_rst("GPIO5_16", "ENET1_RST_B");
-	netc_phy_rst("i2c8_io@21_0", "ENET2_RST_B");
+	/* Reset the ethernet phy only if exists */
+	if (eeprom.features & VAR_EEPROM_F_ETH)
+		netc_phy_rst("i2c8_io@21_0", "ENET2_RST_B");
 	netc_phy_rst("i2c3_io@22_5", "ETH10G_SEL");
 
 	pci_init();
@@ -237,6 +239,7 @@ int board_phy_config(struct phy_device *phydev)
 
 int board_init(void)
 {
+	struct var_eeprom *ep = &eeprom;
 	int ret;
 	ret = imx9_scmi_power_domain_enable(IMX95_PD_HSIO_TOP, true);
 	if (ret) {
@@ -246,6 +249,9 @@ int board_init(void)
 
 	imx9_scmi_power_domain_enable(IMX95_PD_DISPLAY, false);
 	imx9_scmi_power_domain_enable(IMX95_PD_CAMERA, false);
+
+	/* Read EEPROM data */
+	var_eeprom_read_header(ep);
 
 	netc_init();
 
@@ -280,9 +286,6 @@ int board_late_init(void)
 #ifdef CONFIG_AHAB_BOOT
 	env_set("sec_boot", "yes");
 #endif
-	/* Read EEPROM data */
-	var_eeprom_read_header(ep);
-
 	/* SoM Features ENV */
 	env_set("som_has_wbe", (ep->features & VAR_EEPROM_F_WBE) ? "1" : "0");
 
