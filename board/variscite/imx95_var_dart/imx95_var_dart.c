@@ -321,63 +321,8 @@ int board_late_init(void)
 }
 
 #ifdef CONFIG_OF_BOARD_SETUP
-int board_fix_fdt_eeprom(void *fdt)
-{
-	struct var_eeprom *ep = &eeprom;
-	int node_offset;
-	int ret;
-
-	if (!var_eeprom_is_valid(ep)) {
-		printf("%s: Invalid EEPROM data\n", __func__);
-		return -EINVAL;
-	}
-
-	if (!fdt) {
-		printf("%s: Error: fdt is NULL\n", __func__);
-		return -EINVAL;
-	}
-
-	/* Disable WiFi/BT nodes if module absent */
-	if (!(ep->features & VAR_EEPROM_F_WIFI)) {
-		/* Disable WiFi USDHC3 node */
-		node_offset = fdt_path_offset(fdt, "/soc/bus@42800000/mmc@428b0000");
-		if (node_offset < 0) {
-			debug("%s: Could not find usdhc3 (WiFi) node in device tree: %s\n",
-				__func__, fdt_strerror(node_offset));
-			return 0;
-		}
-
-		ret = fdt_setprop_string(fdt, node_offset, "status", "disabled");
-		if (ret < 0) {
-			printf("%s: Failed to disable usdhc3 (WiFi) node: %s\n",
-				__func__, fdt_strerror(ret));
-			return ret;
-		}
-
-		/* Disable BT node */
-		node_offset = fdt_path_offset(fdt, "/soc/bus@42000000/serial@42590000/bluetooth");
-		if (node_offset < 0) {
-			debug("%s: Could not find bluetooth node in device tree: %s\n",
-				__func__, fdt_strerror(node_offset));
-			return 0;
-		}
-
-		ret = fdt_setprop_string(fdt, node_offset, "status", "disabled");
-		if (ret < 0) {
-			printf("%s: Failed to disable bluetooth node: %s\n",
-				__func__, fdt_strerror(ret));
-			return ret;
-		}
-	}
-
-	return 0;
-}
-
 int ft_board_setup(void *blob, struct bd_info *bd)
 {
-	(void)bd;
-	board_fix_fdt_eeprom(blob);
-
 	return 0;
 }
 #endif
