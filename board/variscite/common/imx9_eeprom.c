@@ -162,7 +162,8 @@ int var_eeprom_get_dram_size(struct var_eeprom *ep, phys_size_t *size)
 		return 0;
 	}
 
-	*size = (ep->dramsize * 128UL) << 20;
+	// *size = (ep->dramsize * 128UL) << 20;
+	*size = DEFAULT_SDRAM_SIZE;
 	return 0;
 }
 
