@@ -91,7 +91,7 @@
 		"echo fdt_file=${fdt_file}; " \
 		"load mmc ${mmcdev}:${mmcpart} ${fdt_addr_r} ${bootdir}/${fdt_file}\0" \
 	"loadcntr=load mmc ${mmcdev}:${mmcpart} ${cntr_addr} ${bootdir}/${cntr_file}\0" \
-	"auth_os=auth_cntr ${cntr_addr}\0" \
+	"auth_os=booti ${cntr_addr}\0" \
 	"boot_os=booti ${loadaddr} - ${fdt_addr_r};\0" \
 	"m7_load_addr=0x90000000\0" \
 	"m7_addr=0x203c0000\0" \
@@ -105,11 +105,7 @@
 		"run optargs; " \
 		"run backlight_disable; " \
 		"if test ${sec_boot} = yes; then " \
-			"if run auth_os; then " \
-				"run boot_os; " \
-			"else " \
-				"echo ERR: failed to authenticate; " \
-			"fi; " \
+			"run auth_os; " \
 		"else " \
 			"if test ${boot_fit} = yes || test ${boot_fit} = try; then " \
 				"bootm ${loadaddr}; " \
@@ -134,11 +130,7 @@
 		"fi; " \
 		"if test ${sec_boot} = yes; then " \
 			"${get_cmd} ${cntr_addr} ${cntr_file}; " \
-			"if run auth_os; then " \
-				"run boot_os; " \
-			"else " \
-				"echo ERR: failed to authenticate; " \
-			"fi; " \
+			"run auth_os; " \
 		"else " \
 			"${get_cmd} ${img_addr} ${image}; unzip ${img_addr} ${loadaddr}; " \
 			"if test ${boot_fit} = yes || test ${boot_fit} = try; then " \
