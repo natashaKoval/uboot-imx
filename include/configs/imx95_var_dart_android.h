@@ -18,6 +18,7 @@
 #define ANDROID_MCU_OS_PARTITION_SIZE 0x40000
 #define ANDROID_MCU_FIRMWARE_SIZE  0x20000
 #define ANDROID_MCU_FIRMWARE_HEADER_STACK 0x2001e000
+#define CONFIG_BOOTCOMMAND "setenv append_bootargs pd_ignore_unused; bootmcu; boota"
 #endif
 
 #define CFG_SYS_SPL_PTE_RAM_BASE    0x901F8000
