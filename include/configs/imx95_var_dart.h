@@ -85,7 +85,11 @@
 		"unzip ${img_addr} ${loadaddr}\0" \
 	"findfdt=" \
 		"if test $fdt_file = undefined; then " \
-			"setenv fdt_file imx95-var-dart-${carrier_name}${m7_dtb_suffix}.dtb;" \
+			"setenv wbe_suffix; " \
+			"if test $carrier_name = sonata && test $som_has_wbe = 1; then " \
+				"setenv wbe_suffix -wbe; " \
+			"fi; " \
+			"setenv fdt_file imx95-var-dart${wbe_suffix}-${carrier_name}${m7_dtb_suffix}.dtb;" \
 		"fi; \0" \
 	"loadfdt=run findfdt; " \
 		"echo fdt_file=${fdt_file}; " \
